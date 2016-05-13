@@ -1,2 +1,2 @@
-# chemstuff
+# ChemStuff
 AP Chemistry utility suite
