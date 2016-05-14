@@ -1,15 +1,35 @@
-<h1 class="text-center">ChemThings</h1>
+<div class="row">
+	<!--<div class="col-sm-4">-->
+		<h1 class="text-center">ChemThings</h1>
+	<!--</div>-->
+	<!--<div class="col-sm-8">
+		<div class="form-inline">
+			<div class="form-group">
+				<div class="input-group" ng-repeat="input in $ctrl.input track by $index">
+					<div class="input-group-addon" style="width:40px" ng-bind="$index"></div>
+					<input type="text" class="form-control" ng-model="input.value" ng-change="$ctrl.onType()">
+					<span class="input-group-btn">
+						<a class="btn btn-default" ng-click="$ctrl.input.splice($index, 1)">-</a>
+			      </span>
+				</div>
+				<div class="input-group">
+					<a class="btn btn-default" ng-click="$ctrl.input.length = $ctrl.input.length + 1">+</a>
+				</div>
+			</div>
+		</div>
+	</div>-->
+</div>
 <hr>
-<div class="container">
-	<div class="col-md-7">
-		<div class="editor" ace-editor ng-model="$ctrl.script" ng-init="$ctrl.onType()" ng-change="$ctrl.onType()" ng-keydown="$event.keyCode == 13 && $event.ctrlKey && $ctrl.eval()"></div>
+<div class="container-fluid">
+	<div class="col-sm-7">
+		<div class="editor" ace-editor ng-model="$ctrl.script" ng-change="$ctrl.onType()" ng-keydown="$event.keyCode == 13 && $event.ctrlKey && $ctrl.eval()"></div>
 	</div>
-	<div class="col-md-5">
+	<br>
+	<div class="col-sm-5">
 		<a class="btn btn-primary" ng-click="$ctrl.eval()">Run Script</a>
 		<label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Autorun</label>
-		<hr>
+		<br><br>
 		<pre class="editor-output" ng-class="{'text-muted':!$ctrl.output.current}" ng-bind-html="$ctrl.output.result"></pre>
-		<hr>
 		<span class="text-muted" ng-bind="$ctrl.output.status"></span>
 	</div>
 </div>

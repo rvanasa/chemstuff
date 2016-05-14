@@ -1,48 +1,23 @@
-class AbstractAtom
-{
-	ion(charge)
-	{
-		return new Atom(this.element, this.mass, charge);
-	}
-	
-	iso(mass)
-	{
-		return new Atom(this.element, mass, this.charge);
-	}
-	
-	get shells()
-	{
-		return getShell(this.number);
-	}
-	
-	get shell()
-	{
-		var shells = this.shells;
-		return shells[shells.length - 1];
-	}
-	
-	toString()
-	{
-		return this.name;
-	}
-}
 
-class Atom extends AbstractAtom
+class Atom
 {
 	constructor(element, mass, charge)
 	{
-		super();
-		
-		this.element = element instanceof Element ? element : findElement(element);
+		this.element = element;
 		this.number = element.number;
 		this.symbol = element.symbol;
 		this.name = element.name;
+		this.enegativity = element.enegativity;
+		
 		this.mass = mass || element.mass;
 		this.charge = charge || 0;
 		
 		this.protons = this.number;
 		this.electrons = this.number - this.charge;
 		this.neutrons = Math.round(mass - this.protons);
+		
+		this.shells = getShell(this.electrons);
+		this.shell = this.shells[this.shells.length - 1];
 		
 		if(this.mass != element.mass)
 		{
@@ -60,24 +35,36 @@ class Atom extends AbstractAtom
 			this.name += disp;
 		}
 	}
+	
+	ion(charge)
+	{
+		return new Atom(this.element, this.mass, charge);
+	}
+	
+	iso(mass)
+	{
+		return new Atom(this.element, mass, this.charge);
+	}
+	
+	toString()
+	{
+		return this.name;
+	}
 }
 
-class Element extends AbstractAtom
+class Element extends Atom
 {
-	constructor(number, symbol, name, mass)
+	constructor(number, symbol, name, mass, enegativity)
 	{
-		super();
-		
-		this.number = number;
-		this.symbol = symbol;
-		this.name = name;
-		this.mass = mass;
-		
-		this.protons = this.electrons = this.number;
-		this.neutrons = Math.round(mass - this.protons);
-		
-		this.element = this;
+		super({number, symbol, name, mass, enegativity});
 	}
+	
+	get element()
+	{
+		return this;
+	}
+	
+	set element(value) {}
 }
 
 var shellTypes =
@@ -113,145 +100,145 @@ function getShell(number)
 
 var elementLookup = {};
 
-function addElement(number, symbol, name, mass)
+function addElement(number, symbol, name, mass, enegativity)
 {
-	var element = new Element(number, symbol, name, mass);
+	var element = new Element(number, symbol, name, mass, enegativity);
 	
 	elementLookup[number] = element;
 	elementLookup[symbol.toLowerCase()] = element;
 	elementLookup[name.toLowerCase()] = element;
+	elementLookup[element.shell.replace(/<[^>]+>/g, '')] = element;
 	
 	return element;
 }
 
-function findElement(selector)
+function E(selector)
 {
 	if(selector)
 	{
-		return elementLookup[selector.toString().toLowerCase()];
+		return elementLookup[selector.toString().toLowerCase()] || null;
 	}
 }
 
-findElement.populate = (callback) =>
+E.populate = (callback) =>
 {
 	for(var i = 1; i <= 118; i++) callback(elementLookup[i]);
 }
 
-addElement(1, 'H', 'Hydrogen', 1.008);
-addElement(2, 'He', 'Helium', 4.002602);
-addElement(3, 'Li', 'Lithium', 6.94);
-addElement(4, 'Be', 'Beryllium', 9.0121831);
-addElement(5, 'B', 'Boron', 10.81);
-addElement(6, 'C', 'Carbon', 12.011);
-addElement(7, 'N', 'Nitrogen', 14.007);
-addElement(8, 'O', 'Oxygen', 15.999);
-addElement(9, 'F', 'Fluorine', 18.998403163);
-addElement(10, 'Ne', 'Neon', 20.1797);
-addElement(11, 'Na', 'Sodium', 22.98976928);
-addElement(12, 'Mg', 'Magnesium', 24.305);
-addElement(13, 'Al', 'Aluminium', 26.9815385);
-addElement(14, 'Si', 'Silicon', 28.085);
-addElement(15, 'P', 'Phosphorus', 30.973761998);
-addElement(16, 'S', 'Sulfur', 32.06);
-addElement(17, 'Cl', 'Chlorine', 35.45);
-addElement(18, 'Ar', 'Argon', 39.948);
-addElement(19, 'K', 'Potassium', 39.0983);
-addElement(20, 'Ca', 'Calcium', 40.078);
-addElement(21, 'Sc', 'Scandium', 44.955908);
-addElement(22, 'Ti', 'Titanium', 47.867);
-addElement(23, 'V', 'Vanadium', 50.9415);
-addElement(24, 'Cr', 'Chromium', 51.9961);
-addElement(25, 'Mn', 'Manganese', 54.938044);
-addElement(26, 'Fe', 'Iron', 55.845);
-addElement(27, 'Co', 'Cobalt', 58.933194);
-addElement(28, 'Ni', 'Nickel', 58.6934);
-addElement(29, 'Cu', 'Copper', 63.546);
-addElement(30, 'Zn', 'Zinc', 65.38);
-addElement(31, 'Ga', 'Gallium', 69.723);
-addElement(32, 'Ge', 'Germanium', 72.63);
-addElement(33, 'As', 'Arsenic', 74.921595);
-addElement(34, 'Se', 'Selenium', 78.971);
-addElement(35, 'Br', 'Bromine', 79.904);
-addElement(36, 'Kr', 'Krypton', 83.798);
-addElement(37, 'Rb', 'Rubidium', 85.4678);
-addElement(38, 'Sr', 'Strontium', 87.62);
-addElement(39, 'Y', 'Yttrium', 88.90584);
-addElement(40, 'Zr', 'Zirconium', 91.224);
-addElement(41, 'Nb', 'Niobium', 92.90637);
-addElement(42, 'Mo', 'Molybdenum', 95.95);
-addElement(43, 'Tc', 'Technetium', 98);
-addElement(44, 'Ru', 'Ruthenium', 101.07);
-addElement(45, 'Rh', 'Rhodium', 102.90550);
-addElement(46, 'Pd', 'Palladium', 106.42);
-addElement(47, 'Ag', 'Silver', 107.8682);
-addElement(48, 'Cd', 'Cadmium', 112.414);
-addElement(49, 'In', 'Indium', 114.818);
-addElement(50, 'Sn', 'Tin', 118.710);
-addElement(51, 'Sb', 'Antimony', 121.760);
-addElement(52, 'Te', 'Tellurium', 127.60);
-addElement(53, 'I', 'Iodine', 126.90447);
-addElement(54, 'Xe', 'Xenon', 131.293);
-addElement(55, 'Cs', 'Caesium', 132.90545196);
-addElement(56, 'Ba', 'Barium', 137.327);
-addElement(57, 'Hf', 'Hafnium', 178.49);
-addElement(58, 'Ta', 'Tantalum', 180.94788);
-addElement(59, 'W', 'Tungsten', 183.84);
-addElement(60, 'Re', 'Rhenium', 186.207);
-addElement(61, 'Os', 'Osmium', 190.23);
-addElement(62, 'Ir', 'Iridium', 192.217);
-addElement(63, 'Pt', 'Platinum', 195.084);
-addElement(64, 'Au', 'Gold', 196.966569);
-addElement(65, 'Hg', 'Mercury', 200.59);
-addElement(66, 'Tl', 'Thallium', 204.38);
-addElement(67, 'Pb', 'Lead', 207.2);
-addElement(68, 'Bi', 'Bismuth', 208.98040);
-addElement(69, 'Po', 'Polonium', 209);
-addElement(70, 'At', 'Astatine', 210);
-addElement(71, 'Rn', 'Radon', 222);
-addElement(72, 'Fr', 'Francium', 223);
-addElement(73, 'Ra', 'Radium', 226);
-addElement(74, 'Rf', 'Rutherfordium', 267);
-addElement(75, 'Db', 'Dubnium', 268);
-addElement(76, 'Sg', 'Seaborgium', 271);
-addElement(77, 'Bh', 'Bohrium', 272);
-addElement(78, 'Hs', 'Hassium', 270);
-addElement(79, 'Mt', 'Meitnerium', 276);
-addElement(80, 'Ds', 'Darmstadtium', 281);
-addElement(81, 'Rg', 'Roentgenium', 280);
-addElement(82, 'Cn', 'Copernicium', 285);
-addElement(83, 'Uut', 'Ununtrium', 284);
-addElement(84, 'Fl', 'Flerovium', 289);
-addElement(85, 'Uup', 'Ununpentium', 288);
-addElement(86, 'Lv', 'Livermorium', 293);
-addElement(87, 'Uus', 'Ununseptium', 294);
-addElement(88, 'Uuo', 'Ununoctium', 294);
-addElement(89, 'La', 'Lanthanum', 138.90547);
-addElement(90, 'Ce', 'Cerium', 140.116);
-addElement(91, 'Pr', 'Praseodymium', 140.90766);
-addElement(92, 'Nd', 'Neodymium', 144.242);
-addElement(93, 'Pm', 'Promethium', 145);
-addElement(94, 'Sm', 'Samarium', 150.36);
-addElement(95, 'Eu', 'Europium', 151.964);
-addElement(96, 'Gd', 'Gadolinium', 157.25);
-addElement(97, 'Tb', 'Terbium', 158.92535);
-addElement(98, 'Dy', 'Dysprosium', 162.500);
-addElement(99, 'Ho', 'Holmium', 164.93033);
-addElement(100, 'Er', 'Erbium', 167.259);
-addElement(101, 'Tm', 'Thulium', 168.93422);
-addElement(102, 'Yb', 'Ytterbium', 173.054);
-addElement(103, 'Lu', 'Lutetium', 174.9668);
-addElement(104, 'Ac', 'Actinium', 227);
-addElement(105, 'Th', 'Thorium', 232.0377);
-addElement(106, 'Pa', 'Protactinium', 231.03588);
-addElement(107, 'U', 'Uranium', 238.02891);
-addElement(108, 'Np', 'Neptunium', 237);
-addElement(109, 'Pu', 'Plutonium', 244);
-addElement(110, 'Am', 'Americium', 243);
-addElement(111, 'Cm', 'Curium', 247);
-addElement(112, 'Bk', 'Berkelium', 247);
-addElement(113, 'Cf', 'Californium', 251);
-addElement(114, 'Es', 'Einsteinium', 252);
-addElement(115, 'Fm', 'Fermium', 257);
-addElement(116, 'Md', 'Mendelevium', 258);
-addElement(117, 'No', 'Nobelium', 259);
-addElement(118, 'Lr', 'Lawrencium', 262);
+addElement(2, 'He', 'Helium', 4.002602, 0);
+addElement(3, 'Li', 'Lithium', 6.94, 0.98);
+addElement(4, 'Be', 'Beryllium', 9.0121831, 1.57);
+addElement(5, 'B', 'Boron', 10.81, 2.04);
+addElement(6, 'C', 'Carbon', 12.011, 2.55);
+addElement(7, 'N', 'Nitrogen', 14.007, 3.04);
+addElement(8, 'O', 'Oxygen', 15.999, 3.44);
+addElement(9, 'F', 'Fluorine', 18.998403163, 3.98);
+addElement(10, 'Ne', 'Neon', 20.1797, 0);
+addElement(11, 'Na', 'Sodium', 22.98976928, 0.93);
+addElement(12, 'Mg', 'Magnesium', 24.305, 1.31);
+addElement(13, 'Al', 'Aluminium', 26.9815385, 1.61);
+addElement(14, 'Si', 'Silicon', 28.085, 1.9);
+addElement(15, 'P', 'Phosphorus', 30.973761998, 2.19);
+addElement(16, 'S', 'Sulfur', 32.06, 2.58);
+addElement(17, 'Cl', 'Chlorine', 35.45, 3.16);
+addElement(18, 'Ar', 'Argon', 39.948, 0);
+addElement(19, 'K', 'Potassium', 39.0983, 0.82);
+addElement(20, 'Ca', 'Calcium', 40.078, 1);
+addElement(21, 'Sc', 'Scandium', 44.955908, 1.36);
+addElement(22, 'Ti', 'Titanium', 47.867, 1.54);
+addElement(23, 'V', 'Vanadium', 50.9415, 1.63);
+addElement(24, 'Cr', 'Chromium', 51.9961, 1.66);
+addElement(25, 'Mn', 'Manganese', 54.938044, 1.55);
+addElement(26, 'Fe', 'Iron', 55.845, 1.83);
+addElement(27, 'Co', 'Cobalt', 58.933194, 1.88);
+addElement(28, 'Ni', 'Nickel', 58.6934, 1.91);
+addElement(29, 'Cu', 'Copper', 63.546, 1.9);
+addElement(30, 'Zn', 'Zinc', 65.38, 1.65);
+addElement(31, 'Ga', 'Gallium', 69.723, 1.81);
+addElement(32, 'Ge', 'Germanium', 72.63, 2.01);
+addElement(33, 'As', 'Arsenic', 74.921595, 2.18);
+addElement(34, 'Se', 'Selenium', 78.971, 2.55);
+addElement(35, 'Br', 'Bromine', 79.904, 2.96);
+addElement(36, 'Kr', 'Krypton', 83.798, 0);
+addElement(37, 'Rb', 'Rubidium', 85.4678, 0.82);
+addElement(38, 'Sr', 'Strontium', 87.62, 0.95);
+addElement(39, 'Y', 'Yttrium', 88.90584, 1.22);
+addElement(40, 'Zr', 'Zirconium', 91.224, 1.33);
+addElement(41, 'Nb', 'Niobium', 92.90637, 1.6);
+addElement(42, 'Mo', 'Molybdenum', 95.95, 2.16);
+addElement(43, 'Tc', 'Technetium', 98, 1.9);
+addElement(44, 'Ru', 'Ruthenium', 101.07, 2.2);
+addElement(45, 'Rh', 'Rhodium', 102.90550, 2.28);
+addElement(46, 'Pd', 'Palladium', 106.42, 2.2);
+addElement(47, 'Ag', 'Silver', 107.8682, 1.93);
+addElement(48, 'Cd', 'Cadmium', 112.414, 1.69);
+addElement(49, 'In', 'Indium', 114.818, 1.78);
+addElement(50, 'Sn', 'Tin', 118.710, 1.96);
+addElement(51, 'Sb', 'Antimony', 121.760, 2.05);
+addElement(52, 'Te', 'Tellurium', 127.60, 2.1);
+addElement(53, 'I', 'Iodine', 126.90447, 2.66);
+addElement(54, 'Xe', 'Xenon', 131.293, 2.6);
+addElement(55, 'Cs', 'Caesium', 132.90545196, 0.79);
+addElement(56, 'Ba', 'Barium', 137.327, 0.89);
+addElement(57, 'La', 'Lanthanum', 138.90547, 1.1);
+addElement(58, 'Ce', 'Cerium', 140.116, 1.12);
+addElement(59, 'Pr', 'Praseodymium', 140.90766, 1.13);
+addElement(60, 'Nd', 'Neodymium', 144.242, 1.14);
+addElement(61, 'Pm', 'Promethium', 145, 1.13);
+addElement(62, 'Sm', 'Samarium', 150.36, 1.17);
+addElement(63, 'Eu', 'Europium', 151.964, 1.2);
+addElement(64, 'Gd', 'Gadolinium', 157.25, 1.2);
+addElement(65, 'Tb', 'Terbium', 158.92535, 1.1);
+addElement(66, 'Dy', 'Dysprosium', 162.500, 1.22);
+addElement(67, 'Ho', 'Holmium', 164.93033, 1.23);
+addElement(68, 'Er', 'Erbium', 167.259, 1.24);
+addElement(69, 'Tm', 'Thulium', 168.93422, 1.25);
+addElement(70, 'Yb', 'Ytterbium', 173.054, 1.1);
+addElement(71, 'Lu', 'Lutetium', 174.9668, 1.27);
+addElement(72, 'Hf', 'Hafnium', 178.49, 1.3);
+addElement(73, 'Ta', 'Tantalum', 180.94788, 1.5);
+addElement(74, 'W', 'Tungsten', 183.84, 2.36);
+addElement(75, 'Re', 'Rhenium', 186.207, 1.9);
+addElement(76, 'Os', 'Osmium', 190.23, 2.2);
+addElement(77, 'Ir', 'Iridium', 192.217, 2.2);
+addElement(78, 'Pt', 'Platinum', 195.084, 2.28);
+addElement(79, 'Au', 'Gold', 196.966569, 2.54);
+addElement(80, 'Hg', 'Mercury', 200.59, 2);
+addElement(81, 'Tl', 'Thallium', 204.38, 2.04);
+addElement(82, 'Pb', 'Lead', 207.2, 2.33);
+addElement(83, 'Bi', 'Bismuth', 208.98040, 2.02);
+addElement(84, 'Po', 'Polonium', 209, 2);
+addElement(85, 'At', 'Astatine', 210, 2.2);
+addElement(86, 'Rn', 'Radon', 222, 0);
+addElement(87, 'Fr', 'Francium', 223, 0.7);
+addElement(88, 'Ra', 'Radium', 226, 0.89);
+addElement(89, 'Ac', 'Actinium', 227, 1.1);
+addElement(90, 'Th', 'Thorium', 232.0377, 1.3);
+addElement(91, 'Pa', 'Protactinium', 231.03588, 1.5);
+addElement(92, 'U', 'Uranium', 238.02891, 1.38);
+addElement(93, 'Np', 'Neptunium', 237, 1.36);
+addElement(94, 'Pu', 'Plutonium', 244, 1.28);
+addElement(95, 'Am', 'Americium', 243, 1.3);
+addElement(96, 'Cm', 'Curium', 247, 1.3);
+addElement(97, 'Bk', 'Berkelium', 247, 1.3);
+addElement(98, 'Cf', 'Californium', 251, 1.3);
+addElement(99, 'Es', 'Einsteinium', 252, 1.3);
+addElement(100, 'Fm', 'Fermium', 257, 1.3);
+addElement(101, 'Md', 'Mendelevium', 258, 1.3);
+addElement(102, 'No', 'Nobelium', 259, 1.3);
+addElement(103, 'Lr', 'Lawrencium', 262, null);
+addElement(104, 'Rf', 'Rutherfordium', 267, null);
+addElement(105, 'Db', 'Dubnium', 268, null);
+addElement(106, 'Sg', 'Seaborgium', 271, null);
+addElement(107, 'Bh', 'Bohrium', 272, null);
+addElement(108, 'Hs', 'Hassium', 270, null);
+addElement(109, 'Mt', 'Meitnerium', 276, null);
+addElement(110, 'Ds', 'Darmstadtium', 281, null);
+addElement(111, 'Rg', 'Roentgenium', 280, null);
+addElement(112, 'Cn', 'Copernicium', 285, null);
+addElement(113, 'Uut', 'Ununtrium', 284, null);
+addElement(114, 'Fl', 'Flerovium', 289, null);
+addElement(115, 'Uup', 'Ununpentium', 288, null);
+addElement(116, 'Lv', 'Livermorium', 293, null);
+addElement(117, 'Uus', 'Ununseptium', 294, null);
+addElement(118, 'Uuo', 'Ununoctium', 294, null);

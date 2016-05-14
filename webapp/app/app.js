@@ -3,8 +3,10 @@ angular.module('chemthings', ['ngSanitize'])
 
 .component('app', {
 	templateUrl: 'component/app.html',
-	controller(Input, Output, EvalService)
+	controller($interval, Input, Output, EvalService)
 	{
+		Input.push({}, {});
+		
 		this.autorun = true;
 		
 		this.script = window.localStorage.getItem('lastScript') || '';
@@ -14,9 +16,7 @@ angular.module('chemthings', ['ngSanitize'])
 		
 		this.onType = () =>
 		{
-			this.saveScript();
-			
-			if(this.autorun) EvalService.evaluate(this.script);
+			saveCt = 100;
 		}
 		
 		this.saveScript = () =>
@@ -30,6 +30,24 @@ angular.module('chemthings', ['ngSanitize'])
 			EvalService.evaluate(this.script);
 			if(!Output.status) Output.status = 'Evaluated successfully.';
 		}
+		
+		this.evalSilent = () => EvalService.evaluate(this.script);
+		
+		this.evalSilent();
+		
+		var saveCt = 0;
+		$interval(() =>
+		{
+			if(saveCt > 0)
+			{
+				saveCt -= 100;
+				if(saveCt <= 0)
+				{
+					this.saveScript();
+					if(this.autorun) this.evalSilent();
+				}
+			}
+		}, 100);
 	}
 })
 
@@ -40,7 +58,7 @@ angular.module('chemthings', ['ngSanitize'])
 		var lineHeight = editor.renderer.lineHeight;
 		var rows = editor.getSession().getLength();
 
-		$(elem).height(rows * lineHeight);
+		angular.element(elem).height(rows * lineHeight);
 		editor.resize();
 	}
 	
@@ -57,7 +75,7 @@ angular.module('chemthings', ['ngSanitize'])
 			
 			editor.$blockScrolling = Infinity;
 			editor.setShowPrintMargin(false);
-			editor.setTheme('ace/theme/clouds');
+			editor.setTheme('ace/theme/textmate');
 			
 			editor.getSession().setMode('ace/mode/javascript');
 			
@@ -72,7 +90,7 @@ angular.module('chemthings', ['ngSanitize'])
 				
 				if(shouldDeselect)
 				{
-					editor.selection.setRange(new Range());
+					editor.selection.clearSelection();
 				}
 			};
 			
@@ -92,36 +110,38 @@ angular.module('chemthings', ['ngSanitize'])
 	};
 })
 
-.value('Input', {})
+.value('Input', [])
 .value('Output', {status: null})
 
-.service('EvalService', function(Input, Output)
+.service('EvalService', function(Input, Output, SerializerService)
 {
 	var sandbox = null;
 	
-	this.evaluate = (input) =>
+	sandbox = document.createElement('iframe');
+	sandbox.hidden = true;
+	document.body.appendChild(sandbox);
+	
+	/* global E */
+	sandbox.contentWindow.E = E;
+	sandbox.contentWindow.input = [];
+	
+	this.evaluate = (script) =>
 	{
-		if(sandbox)
+		for(var key in Input)
 		{
-			sandbox.remove();
+			sandbox.contentWindow[key] = Input[key].value;
 		}
-		sandbox = document.createElement('iframe');
-		sandbox.hidden = true;
-		
-		document.body.appendChild(sandbox);
-		
-		/* global findElement */
-		sandbox.contentWindow.input = Input;
-		sandbox.contentWindow.E = findElement;
 		
 		Output.status = null;
 		
 		try
 		{
 			Output.current = true;
-			sandbox.contentWindow.output = '';
-			sandbox.contentWindow.eval(input);
-			Output.result = this.formatOutput(sandbox.contentWindow.output);
+			sandbox.contentWindow.output = {};
+			var evalResult = sandbox.contentWindow.eval('(function run() {\n' + script + '\n})()');
+			
+			if(evalResult === undefined) evalResult = sandbox.contentWindow.output;
+			Output.result = SerializerService.deserialize(evalResult);
 		}
 		catch(e)
 		{
@@ -129,16 +149,24 @@ angular.module('chemthings', ['ngSanitize'])
 			Output.status = e.message;
 		}
 	}
-	
-	this.formatOutput = (data) =>
+})
+
+.service('SerializerService', function()
+{
+	this.serialize = (string, type) =>
 	{
-		if(data instanceof Array)
-		{
-			return data.join('\n');
-		}
-		else
-		{
-			return data;
-		}
+		if(type == 'string') return string;
+		if(type == 'element') return E(string);
+		return string;
+	}
+	
+	this.deserialize = (value) =>
+	{
+		if(value === undefined) return;
+		if(value === null) return 'null';
+		if(typeof value == 'string') return value;
+		if(Array.isArray(value)) return value.join('\n');
+		
+		return Object.keys(value).map(k => '<b>' + k + '</b>: ' + value[k]).join('\n');
 	}
 })
