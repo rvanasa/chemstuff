@@ -2,13 +2,13 @@
 <hr>
 <div class="container">
 	<div class="col-md-7">
-		<div class="editor" ace-editor ng-model="$ctrl.script" ng-change="$ctrl.onType()" ng-init="$ctrl.onType()"></div>
+		<div class="editor" ace-editor ng-model="$ctrl.script" ng-init="$ctrl.onType()" ng-change="$ctrl.onType()" ng-keydown="$event.keyCode == 13 && $event.ctrlKey && $ctrl.eval()"></div>
 	</div>
 	<div class="col-md-5">
-		<button class="btn btn-primary" ng-click="$ctrl.eval($ctrl.script)">Run Script</button>
+		<a class="btn btn-primary" ng-click="$ctrl.eval()">Run Script</a>
 		<label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Autorun</label>
 		<hr>
-		<pre class="editor-output" ng-bind-html="$ctrl.output.result"></pre>
+		<pre class="editor-output" ng-class="{'text-muted':!$ctrl.output.current}" ng-bind-html="$ctrl.output.result"></pre>
 		<hr>
 		<span class="text-muted" ng-bind="$ctrl.output.status"></span>
 	</div>

@@ -5,7 +5,7 @@ angular.module('chemthings', ['ngSanitize'])
 	templateUrl: 'component/app.html',
 	controller(Input, Output, EvalService)
 	{
-		this.autorun = false;
+		this.autorun = true;
 		
 		this.script = window.localStorage.getItem('lastScript') || '';
 		
@@ -24,10 +24,10 @@ angular.module('chemthings', ['ngSanitize'])
 			window.localStorage.setItem('lastScript', this.script || '');
 		}
 		
-		this.eval = (script) =>
+		this.eval = () =>
 		{
 			Output.result = undefined;
-			EvalService.evaluate(script);
+			EvalService.evaluate(this.script);
 			if(!Output.status) Output.status = 'Evaluated successfully.';
 		}
 	}
@@ -118,12 +118,27 @@ angular.module('chemthings', ['ngSanitize'])
 		
 		try
 		{
+			Output.current = true;
+			sandbox.contentWindow.output = '';
 			sandbox.contentWindow.eval(input);
-			Output.result = sandbox.contentWindow.output;
+			Output.result = this.formatOutput(sandbox.contentWindow.output);
 		}
 		catch(e)
 		{
+			Output.current = false;
 			Output.status = e.message;
+		}
+	}
+	
+	this.formatOutput = (data) =>
+	{
+		if(data instanceof Array)
+		{
+			return data.join('\n');
+		}
+		else
+		{
+			return data;
 		}
 	}
 })
