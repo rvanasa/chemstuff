@@ -1,0 +1,16 @@
+<h1 class="text-center">ChemThings</h1>
+<hr>
+<div class="container">
+	<div class="col-md-7">
+		<div class="editor" ace-editor ng-model="$ctrl.script" ng-change="$ctrl.onType()" ng-init="$ctrl.onType()"></div>
+	</div>
+	<div class="col-md-5">
+		<button class="btn btn-primary" ng-click="$ctrl.eval($ctrl.script)">Run Script</button>
+		<label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Autorun</label>
+		<hr>
+		<pre class="editor-output" ng-bind-html="$ctrl.output.result"></pre>
+		<hr>
+		<span class="text-muted" ng-bind="$ctrl.output.status"></span>
+	</div>
+</div>
+<hr>

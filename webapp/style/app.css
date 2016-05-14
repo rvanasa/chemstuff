@@ -1,0 +1,41 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700);
+
+:NOT(.noanimate) {
+	transition: 0.1s ease-out background, 0.1s ease-out color;
+}
+
+body {
+	font-family: "Roboto Slab";
+}
+
+.editor {
+	margin: auto;
+    min-height: 300px;
+    border: 1px solid #EEE;
+}
+
+.editor-output {
+	min-height: 100px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+    background: #DDD;
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: #AAA;
+    border-radius: 4px;
+}
+ 
+::-webkit-scrollbar-thumb:HOVER {
+    background: #989898;
+}
+
+::selection {
+    background: #DDD;
+    color: #555;
+}
