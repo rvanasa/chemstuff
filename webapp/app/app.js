@@ -72,10 +72,14 @@ angular.module('chemthings', ['ngSanitize'])
 			
 			/* global ace */
 			var editor = ace.edit(node);
-			
 			editor.$blockScrolling = Infinity;
+			
 			editor.setShowPrintMargin(false);
 			editor.setTheme('ace/theme/textmate');
+			editor.setOptions({
+		        enableBasicAutocompletion: true,
+		        enableLiveAutocompletion: false,
+		    });
 			
 			editor.getSession().setMode('ace/mode/javascript');
 			

@@ -7,6 +7,8 @@ class Atom
 		this.number = element.number;
 		this.symbol = element.symbol;
 		this.name = element.name;
+		this.group = element.group;
+		this.period = element.period;
 		this.enegativity = element.enegativity;
 		
 		this.mass = mass || element.mass;
@@ -14,14 +16,14 @@ class Atom
 		
 		this.protons = this.number;
 		this.electrons = this.number - this.charge;
-		this.neutrons = Math.round(mass - this.protons);
+		this.neutrons = Math.round(this.mass - this.protons);
 		
 		this.shells = getShell(this.electrons);
 		this.shell = this.shells[this.shells.length - 1];
 		
 		if(this.mass != element.mass)
 		{
-			let disp = '-' + Math.round(this.mass);
+			var disp = '-' + Math.round(this.mass);
 			
 			this.symbol += disp;
 			this.name += disp;
@@ -29,7 +31,8 @@ class Atom
 		
 		if(this.charge != 0)
 		{
-			let disp = '<sup>' + (this.charge != 1 ? this.charge : '') + (this.charge > 0 ? '+' : '-') + '</sup>';
+			var absCharge = Math.abs(charge);
+			var disp = '<sup>' + (absCharge != 1 ? absCharge : '') + (this.charge > 0 ? '+' : '-') + '</sup>';
 			
 			this.symbol += disp;
 			this.name += disp;
@@ -56,7 +59,9 @@ class Element extends Atom
 {
 	constructor(number, symbol, name, mass, enegativity)
 	{
-		super({number, symbol, name, mass, enegativity});
+		super({number, symbol, name, mass, enegativity, group: incrementGroup.group, period: incrementGroup.period});
+		
+		incrementGroup();
 	}
 	
 	get element()
@@ -98,33 +103,68 @@ function getShell(number)
 	return result;
 }
 
-var elementLookup = {};
-
 function addElement(number, symbol, name, mass, enegativity)
 {
 	var element = new Element(number, symbol, name, mass, enegativity);
 	
-	elementLookup[number] = element;
-	elementLookup[symbol.toLowerCase()] = element;
-	elementLookup[name.toLowerCase()] = element;
-	elementLookup[element.shell.replace(/<[^>]+>/g, '')] = element;
+	E.lookup[number] = element;
+	E.lookup[symbol.toLowerCase()] = element;
+	E.lookup[name.toLowerCase()] = element;
+	E.lookup[element.shell.replace(/<[^>]+>/g, '')] = element;
 	
 	return element;
 }
+
+function incrementGroup()
+{
+	var self = incrementGroup;
+	
+	if(self.group == 18)
+	{
+		self.group = 1;
+		self.period++;
+	}
+	else if(self.period == 1 && self.group == 1)
+	{
+		self.group = 18;
+	}
+	else if((self.period == 2 || self.period == 3) && self.group == 2)
+	{
+		self.group = 13;
+	}
+	else if(self.period >= 6 && self.group == 3)
+	{
+		if(++self.extra == 15)
+		{
+			self.extra = 0;
+			self.group++;
+		}
+	}
+	else
+	{
+		self.group++;
+	}
+}
+incrementGroup.group = 1;
+incrementGroup.period = 1;
+incrementGroup.extra = 0;
 
 function E(selector)
 {
 	if(selector)
 	{
-		return elementLookup[selector.toString().toLowerCase()] || null;
+		return E.lookup[selector.toString().toLowerCase()] || null;
 	}
 }
 
+E.lookup = {};
+
 E.populate = (callback) =>
 {
-	for(var i = 1; i <= 118; i++) callback(elementLookup[i]);
+	for(var i = 1; i <= 118; i++) callback(E.lookup[i]);
 }
 
+addElement(1, 'H', 'Hydrogen', 1.008, 2.1);
 addElement(2, 'He', 'Helium', 4.002602, 0);
 addElement(3, 'Li', 'Lithium', 6.94, 0.98);
 addElement(4, 'Be', 'Beryllium', 9.0121831, 1.57);

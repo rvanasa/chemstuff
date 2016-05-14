@@ -1,36 +1,25 @@
-<div class="row">
-	<!--<div class="col-sm-4">-->
-		<h1 class="text-center">ChemThings</h1>
-	<!--</div>-->
-	<!--<div class="col-sm-8">
-		<div class="form-inline">
-			<div class="form-group">
-				<div class="input-group" ng-repeat="input in $ctrl.input track by $index">
-					<div class="input-group-addon" style="width:40px" ng-bind="$index"></div>
-					<input type="text" class="form-control" ng-model="input.value" ng-change="$ctrl.onType()">
-					<span class="input-group-btn">
-						<a class="btn btn-default" ng-click="$ctrl.input.splice($index, 1)">-</a>
-			      </span>
-				</div>
-				<div class="input-group">
-					<a class="btn btn-default" ng-click="$ctrl.input.length = $ctrl.input.length + 1">+</a>
-				</div>
-			</div>
-		</div>
-	</div>-->
+<div class="container-fluid">
+	<h1>ChemThings</h1>
+	<hr>
 </div>
-<hr>
 <div class="container-fluid">
 	<div class="col-sm-7">
 		<div class="editor" ace-editor ng-model="$ctrl.script" ng-change="$ctrl.onType()" ng-keydown="$event.keyCode == 13 && $event.ctrlKey && $ctrl.eval()"></div>
 	</div>
 	<br>
 	<div class="col-sm-5">
-		<a class="btn btn-primary" ng-click="$ctrl.eval()">Run Script</a>
-		<label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Autorun</label>
+		<div class="btn-group">
+		  <a class="btn btn-primary" ng-click="$ctrl.eval()">Run Script</a>
+		  <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    <span class="caret"></span>
+		  </a>
+		  <ul class="dropdown-menu">
+		    <li><label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Auto-run</label></li>
+		  </ul>
+		</div>
+		<span class="text-muted" style="margin-left:10px;" ng-bind="$ctrl.output.status"></span>
 		<br><br>
 		<pre class="editor-output" ng-class="{'text-muted':!$ctrl.output.current}" ng-bind-html="$ctrl.output.result"></pre>
-		<span class="text-muted" ng-bind="$ctrl.output.status"></span>
 	</div>
 </div>
 <hr>
