@@ -3,16 +3,15 @@ angular.module('chemthings', ['ngSanitize'])
 
 .component('app', {
 	templateUrl: 'component/app.html',
-	controller($interval, Input, Output, EvalService)
+	controller($interval, Input, Output, Settings, EvalService)
 	{
 		EvalService.addImport('lib/util/array-extensions');
 			
-		this.autorun = true;
-		
 		this.script = window.localStorage.getItem('lastScript') || '';
 		
 		this.input = Input;
 		this.output = Output;
+		this.settings = Settings;
 		
 		this.onType = () =>
 		{
@@ -42,7 +41,7 @@ angular.module('chemthings', ['ngSanitize'])
 			{
 				saveFlag = false;
 				this.saveScript();
-				if(this.autorun) this.evalSilent();
+				if(Settings.autorun) this.evalSilent();
 			}
 		}, 100);
 	}
@@ -112,6 +111,14 @@ angular.module('chemthings', ['ngSanitize'])
 .value('Input', [])
 .value('Output', {status: null})
 
+.factory('Settings', function()
+{
+	return {
+		autorun: true,
+		autoreturn: true,
+	};
+})
+
 .factory('Buffer', function()
 {
 	return class Buffer
@@ -166,7 +173,7 @@ angular.module('chemthings', ['ngSanitize'])
 	};
 })
 
-.service('EvalService', function($http, Input, Output, Buffer, Sandbox, SerializerService)
+.service('EvalService', function($http, Input, Output, Settings, Buffer, Sandbox, SerializerService)
 {
 	var scriptBuffer = new Buffer();
 	
@@ -205,12 +212,20 @@ angular.module('chemthings', ['ngSanitize'])
 			
 			try
 			{
-				script = script.trim();
-				var splitIndex = script.lastIndexOf('\n') + 1;
-				script = script.substring(0, splitIndex) + 'if(output===undefined)return ' + script.substring(splitIndex).replace(/^return /g, '');
+				if(Settings.autoreturn)
+				{
+					script = script.trim();
+					var splitIndex = script.lastIndexOf('\n') + 1;
+					var endLine = script.substring(splitIndex).trim();
+					
+					if(!/^(return[\(\s]|var|let|const|\})/.test(endLine))
+					{
+						script = script.substring(0, splitIndex) + 'return ' + endLine;
+					}
+				}
 				
-				Sandbox.window.output = undefined;
-				var returnValue = Sandbox.window.eval('(function run() {\n' + script + '\n})()');
+				delete Sandbox.window.output;
+				var returnValue = Sandbox.window.eval('(function run() {\n' + script + '\n;})()');
 				
 				var evalResult = Sandbox.window.output;
 				if(evalResult === undefined) evalResult = returnValue;
@@ -222,7 +237,7 @@ angular.module('chemthings', ['ngSanitize'])
 			catch(e)
 			{
 				Output.current = false;
-				Output.status = e.message;
+				Output.status = e.name == 'SyntaxError' ? null : e.message;
 			}
 		});
 	}
