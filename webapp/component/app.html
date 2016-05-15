@@ -15,7 +15,7 @@
 		  </a>
 		  <ul class="dropdown-menu">
 		    <li ng-click="$event.stopPropagation()"><label style="margin-left:10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.settings.autorun" ng-change="$ctrl.onType()">Run automatically</label></li>
-		    <li ng-click="$event.stopPropagation()"><label style="margin-left:10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.settings.autoreturn" ng-change="$ctrl.onType()">Display last line</label></li>
+		    <li ng-click="$event.stopPropagation()"><label style="margin-left:10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.settings.autoreturn" ng-change="$ctrl.onType()">Output last line</label></li>
 		  </ul>
 		</div>
 		<span class="text-muted" style="margin-left:10px;" ng-bind="$ctrl.output.status"></span>

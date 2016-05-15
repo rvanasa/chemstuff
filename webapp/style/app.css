@@ -17,6 +17,7 @@ body {
 
 .editor-output {
 	min-height: 100px;
+	tab-size: 4;
 }
 
 ::-webkit-scrollbar {

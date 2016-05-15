@@ -1,9 +1,9 @@
 void function()
 {
-	var mapFn = Array.prototype.map;
-	Array.prototype.map = function(arg) {return mapFn.call(this, typeof arg == 'string' ? (e) => e[arg] : arg)};
+	var mapFn = this.map;
+	this.map = function(arg) {return mapFn.call(this, typeof arg == 'string' ? (e) => e[arg] : arg)};
 	
-	Array.prototype.toObject = function(keyMap, valueMap)
+	this.toObject = function(keyMap, valueMap)
 	{
 		if(!valueMap) valueMap = (e) => e;
 		
@@ -16,8 +16,12 @@ void function()
 		return result;
 	}
 	
-	Array.prototype.sum = function() {return this.reduce((a, b) => a + b, 0)};
+	this.sum = function() {return this.reduce((a, b) => +a + b, 0)};
 	
-	Array.prototype.max = function() {return this.reduce(Math.max, this[0])};
-	Array.prototype.min = function() {return this.reduce(Math.min, this[0])};
-}();
+	this.max = function() {return this.reduce(Math.max, this[0])};
+	this.min = function() {return this.reduce(Math.min, this[0])};
+	
+	this.first = function() {return this[0]};
+	this.last = function() {return this[this.length - 1]};
+	
+}.call(Array.prototype);
