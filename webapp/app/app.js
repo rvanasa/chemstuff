@@ -5,8 +5,8 @@ angular.module('chemthings', ['ngSanitize'])
 	templateUrl: 'component/app.html',
 	controller($interval, Input, Output, EvalService)
 	{
-		Input.push({}, {});
-		
+		EvalService.addImport('lib/util/array-extensions');
+			
 		this.autorun = true;
 		
 		this.script = window.localStorage.getItem('lastScript') || '';
@@ -16,7 +16,7 @@ angular.module('chemthings', ['ngSanitize'])
 		
 		this.onType = () =>
 		{
-			saveCt = 100;
+			saveFlag = true;
 		}
 		
 		this.saveScript = () =>
@@ -35,17 +35,14 @@ angular.module('chemthings', ['ngSanitize'])
 		
 		this.evalSilent();
 		
-		var saveCt = 0;
+		var saveFlag = false;
 		$interval(() =>
 		{
-			if(saveCt > 0)
+			if(saveFlag)
 			{
-				saveCt -= 100;
-				if(saveCt <= 0)
-				{
-					this.saveScript();
-					if(this.autorun) this.evalSilent();
-				}
+				saveFlag = false;
+				this.saveScript();
+				if(this.autorun) this.evalSilent();
 			}
 		}, 100);
 	}
@@ -57,7 +54,7 @@ angular.module('chemthings', ['ngSanitize'])
 	{
 		var lineHeight = editor.renderer.lineHeight;
 		var rows = editor.getSession().getLength();
-
+		
 		angular.element(elem).height(rows * lineHeight);
 		editor.resize();
 	}
@@ -77,13 +74,11 @@ angular.module('chemthings', ['ngSanitize'])
 			editor.setShowPrintMargin(false);
 			editor.setTheme('ace/theme/textmate');
 			editor.setOptions({
-		        enableBasicAutocompletion: true,
-		        enableLiveAutocompletion: false,
-		    });
+				enableBasicAutocompletion: true,
+				enableLiveAutocompletion: false,
+			});
 			
 			editor.getSession().setMode('ace/mode/javascript');
-			
-			var Range = require('ace/range').Range;
 			
 			ngModel.$render = () =>
 			{
@@ -117,41 +112,119 @@ angular.module('chemthings', ['ngSanitize'])
 .value('Input', [])
 .value('Output', {status: null})
 
-.service('EvalService', function(Input, Output, SerializerService)
+.factory('Buffer', function()
 {
-	var sandbox = null;
-	
-	sandbox = document.createElement('iframe');
+	return class Buffer
+	{
+		constructor()
+		{
+			this.waiting = 0;
+			this.callbacks = [];
+		}
+		
+		run(callback)
+		{
+			if(this.waiting)
+			{
+				this.callbacks.push(callback);
+			}
+			else
+			{
+				callback();
+			}
+		}
+		
+		wait()
+		{
+			this.waiting++;
+		}
+		
+		resume()
+		{
+			this.waiting--;
+			if(!this.waiting)
+			{
+				for(var i = 0; i < this.callbacks.length; i++)
+				{
+					this.callbacks[i]();
+				}
+				this.callbacks.length = 0;
+			}
+		}
+	}
+})
+
+.factory('Sandbox', function()
+{
+	var sandbox = document.createElement('iframe');
 	sandbox.hidden = true;
 	document.body.appendChild(sandbox);
 	
+	return {
+		element: sandbox,
+		window: sandbox.contentWindow,
+	};
+})
+
+.service('EvalService', function($http, Input, Output, Buffer, Sandbox, SerializerService)
+{
+	var scriptBuffer = new Buffer();
+	
 	/* global E */
-	sandbox.contentWindow.E = E;
-	sandbox.contentWindow.input = [];
+	Sandbox.window.E = E;
+	
+	var imports = [];
+	this.addImport = (path) =>
+	{
+		if(~imports.indexOf(path)) return;
+		imports.push(path);
+		
+		scriptBuffer.wait();
+		
+		$http.get(path + '.js').then(
+			(response) =>
+			{
+				try {Sandbox.window.eval(response.data)}
+				finally {scriptBuffer.resume()}
+			},
+			() =>
+			{
+				Output.status = `Failed to load script from '${path}'`;
+				scriptBuffer.resume();
+			});
+	}
 	
 	this.evaluate = (script) =>
 	{
-		for(var key in Input)
+		scriptBuffer.run(() =>
 		{
-			sandbox.contentWindow[key] = Input[key].value;
-		}
-		
-		Output.status = null;
-		
-		try
-		{
-			Output.current = true;
-			sandbox.contentWindow.output = {};
-			var evalResult = sandbox.contentWindow.eval('(function run() {\n' + script + '\n})()');
+			for(var key in Input)
+			{
+				Sandbox.window[key] = Input[key].value;
+			}
 			
-			if(evalResult === undefined) evalResult = sandbox.contentWindow.output;
-			Output.result = SerializerService.deserialize(evalResult);
-		}
-		catch(e)
-		{
-			Output.current = false;
-			Output.status = e.message;
-		}
+			try
+			{
+				var scriptEdit = script.trim();
+				var splitIndex = scriptEdit.lastIndexOf('\n') + 1;
+				scriptEdit = scriptEdit.substring(0, splitIndex) + 'if(output===undefined)return ' + scriptEdit.substring(splitIndex).replace(/^return /g, '');
+				
+				Sandbox.window.output = undefined;
+				var returnValue = Sandbox.window.eval('(function run() {\n' + scriptEdit + '\n})()');
+				
+				var evalResult = Sandbox.window.output;
+				if(evalResult === undefined) evalResult = returnValue;
+				
+				Output.current = true;
+				Output.status = null;
+				Output.result = SerializerService.deserialize(evalResult);
+			}
+			catch(e)
+			{
+				Output.current = false;
+				Output.status = e.message;
+			}
+		});
 	}
 })
 
@@ -168,7 +241,7 @@ angular.module('chemthings', ['ngSanitize'])
 	{
 		if(value === undefined) return;
 		if(value === null) return 'null';
-		if(typeof value == 'string') return value;
+		if(typeof value == 'string' || typeof value == 'number' || typeof value == 'boolean') return value;
 		if(Array.isArray(value)) return value.join('\n');
 		
 		return Object.keys(value).map(k => '<b>' + k + '</b>: ' + value[k]).join('\n');

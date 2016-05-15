@@ -18,6 +18,9 @@ class Atom
 		this.electrons = this.number - this.charge;
 		this.neutrons = Math.round(this.mass - this.protons);
 		
+		this.category = getCategory(this);
+		this.type = getType(this);
+		
 		this.shells = getShell(this.electrons);
 		this.shell = this.shells[this.shells.length - 1];
 		
@@ -72,6 +75,23 @@ class Element extends Atom
 	set element(value) {}
 }
 
+function E(selector)
+{
+	if(selector)
+	{
+		return E.lookup[selector.toString().toLowerCase()] || null;
+	}
+}
+
+E.lookup = {};
+E.forEach = (callback) =>
+{
+	for(var i = 1; i <= 118; i++) callback(E.lookup[i]);
+}
+
+E.decorators = [];
+E.decorate = (callback) => E.decorators.push(callback);
+
 var shellTypes =
 [
 	{label: 's', max: 2},
@@ -101,6 +121,35 @@ function getShell(number)
 		}
 	}
 	return result;
+}
+
+function getCategory(element)
+{
+	if(element.group == 1) return 'Alkali Metal';
+	if(element.group == 2) return 'Alkaline Earth Metal';
+	if(element.group == 17) return 'Halogen';
+	if(element.group == 18) return 'Noble Gas';
+	if(element.group == 3 && element.period > 6) return element.period == 6 ? 'Lanthanoid' : 'Actinoid';
+	if(element.group <= 12) return 'Transition Metal';
+	if(element.group - element.period <= 9 || element.number == 13) return 'Post-Transition Metal';
+	if(element.group - element.period >= 12 || element.number == 1) return null;
+	return 'Metalloid';
+}
+
+function getType(element)
+{
+	if(element.group >= 17 || element.group - element.period >= 12 || element.number == 1)
+	{
+		return 'nonmetal';
+	}
+	else if(element.group - element.period >= 10 && element.number != 13)
+	{
+		return 'metalloid';
+	}
+	else
+	{
+		return 'metal';
+	}
 }
 
 function addElement(number, symbol, name, mass, enegativity)
@@ -148,21 +197,6 @@ function incrementGroup()
 incrementGroup.group = 1;
 incrementGroup.period = 1;
 incrementGroup.extra = 0;
-
-function E(selector)
-{
-	if(selector)
-	{
-		return E.lookup[selector.toString().toLowerCase()] || null;
-	}
-}
-
-E.lookup = {};
-
-E.populate = (callback) =>
-{
-	for(var i = 1; i <= 118; i++) callback(E.lookup[i]);
-}
 
 addElement(1, 'H', 'Hydrogen', 1.008, 2.1);
 addElement(2, 'He', 'Helium', 4.002602, 0);
