@@ -14,7 +14,7 @@
 		    <span class="caret"></span>
 		  </a>
 		  <ul class="dropdown-menu">
-		    <li><label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Auto-run</label></li>
+		    <li ng-click="$event.stopPropagation()"><label style="margin-left: 10px" class="checkbox-inline"><input type="checkbox" ng-model="$ctrl.autorun" ng-change="$ctrl.onType()">Auto-run</label></li>
 		  </ul>
 		</div>
 		<span class="text-muted" style="margin-left:10px;" ng-bind="$ctrl.output.status"></span>
