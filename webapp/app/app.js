@@ -205,12 +205,12 @@ angular.module('chemthings', ['ngSanitize'])
 			
 			try
 			{
-				var scriptEdit = script.trim();
-				var splitIndex = scriptEdit.lastIndexOf('\n') + 1;
-				scriptEdit = scriptEdit.substring(0, splitIndex) + 'if(output===undefined)return ' + scriptEdit.substring(splitIndex).replace(/^return /g, '');
+				script = script.trim();
+				var splitIndex = script.lastIndexOf('\n') + 1;
+				script = script.substring(0, splitIndex) + 'if(output===undefined)return ' + script.substring(splitIndex).replace(/^return /g, '');
 				
 				Sandbox.window.output = undefined;
-				var returnValue = Sandbox.window.eval('(function run() {\n' + scriptEdit + '\n})()');
+				var returnValue = Sandbox.window.eval('(function run() {\n' + script + '\n})()');
 				
 				var evalResult = Sandbox.window.output;
 				if(evalResult === undefined) evalResult = returnValue;

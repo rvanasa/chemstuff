@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script>
+/* global $ */
+$(window).ready(() =>
+{
+	var list = [], ct = 1;
+	
+	$('#ptable .Element').each((i, elem) =>
+	{
+		elem = $(elem);
+		
+		var acronym = elem.find('acronym').html();
+		var number = elem.find('strong').html();
+		
+		var enegativity = undefined;
+		$('#enegativity td[bgcolor]').each((i, e) =>
+		{
+			if(new RegExp(acronym + '[0-9]', 'g').test(e.textContent))
+			{
+				enegativity = e.textContent.replace(acronym, '').trim();
+			}
+		});
+		
+		list[number - 1] = `addElement(${number}, '${acronym}', '${elem.find('em').html()}', ${elem.find('i').html().replace('(', '').replace(')', '')}, ${enegativity || null});`;
+	});
+	
+	console.log(list.join('\n'));
+});
+
+</script>
+</head>
+<body>
+<h1>Element Bootstrap</h1>
+
+<div hidden>
+
+<table id="ptable">
+
+<tr>
+<td class="Element Nonmetal s"><a href="http://en.wikipedia.org/wiki/Hydrogen"><big><strong an="1">1</strong> <acronym style="color: rgb(153, 0, 0);">H</acronym> <em>Hydrogen</em> <i>1.008</i></big><small>1</small></a></td>
+</tr>
+
+<tr>
+<td class="Element Noble s"><a href="http://en.wikipedia.org/wiki/Helium"><big><strong an="2">2</strong> <acronym style="color: rgb(153, 0, 0);">He</acronym> <em>Helium</em> <i>4.002602</i></big><small>2</small></a></td>
+<td class="Shells"><small>K</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%202%20element">2</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Lithium"><big><strong an="3">3</strong> <acronym style="color: rgb(0, 0, 0);">Li</acronym> <em>Lithium</em> <i>6.94</i></big><small>2<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Beryllium"><big><strong an="4">4</strong> <acronym style="color: rgb(0, 0, 0);">Be</acronym> <em>Beryllium</em> <i>9.0121831</i></big><small>2<br>2</small></a></td>
+<td class="Element Metalloid Boron p"><a href="http://en.wikipedia.org/wiki/Boron"><big><strong an="5">5</strong> <acronym style="color: rgb(0, 0, 0);">B</acronym> <em>Boron</em> <i>10.81</i></big><small>2<br>3</small></a></td>
+<td class="Element Nonmetal Carbon p"><a href="http://en.wikipedia.org/wiki/Carbon"><big><strong an="6">6</strong> <acronym style="color: rgb(0, 0, 0);">C</acronym> <em>Carbon</em> <i>12.011</i></big><small>2<br>4</small></a></td>
+<td class="Element Nonmetal Pnictogen p"><a href="http://en.wikipedia.org/wiki/Nitrogen"><big><strong an="7">7</strong> <acronym style="color: rgb(153, 0, 0);">N</acronym> <em>Nitrogen</em> <i>14.007</i></big><small>2<br>5</small></a></td>
+<td class="Element Nonmetal Chalcogen p"><a href="http://en.wikipedia.org/wiki/Oxygen"><big><strong an="8">8</strong> <acronym style="color: rgb(153, 0, 0);">O</acronym> <em>Oxygen</em> <i>15.999</i></big><small>2<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Fluorine"><big><strong an="9">9</strong> <acronym style="color: rgb(153, 0, 0);">F</acronym> <em>Fluorine</em> <i>18.998403163</i></big><small>2<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Neon"><big><strong an="10">10</strong> <acronym style="color: rgb(153, 0, 0);">Ne</acronym> <em>Neon</em> <i>20.1797</i></big><small>2<br>8</small></a></td>
+<td class="Shells"><small>K<br>L</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%203%20element">3</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Sodium"><big><strong an="11">11</strong> <acronym style="color: rgb(0, 0, 0);">Na</acronym> <em>Sodium</em> <i>22.98976928</i></big><small>2<br>8<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Magnesium"><big><strong an="12">12</strong> <acronym style="color: rgb(0, 0, 0);">Mg</acronym> <em class="Long">Magnesium</em> <i>24.305</i></big><small>2<br>8<br>2</small></a></td>
+<td class="Element Poor Boron p"><a href="http://en.wikipedia.org/wiki/Aluminium"><big><strong an="13">13</strong> <acronym style="color: rgb(0, 0, 0);">Al</acronym> <em class="Long">Aluminium</em> <i>26.9815385</i></big><small>2<br>8<br>3</small></a></td>
+<td class="Element Metalloid Carbon p"><a href="http://en.wikipedia.org/wiki/Silicon"><big><strong an="14">14</strong> <acronym style="color: rgb(0, 0, 0);">Si</acronym> <em>Silicon</em> <i>28.085</i></big><small>2<br>8<br>4</small></a></td>
+<td class="Element Nonmetal Pnictogen p"><a href="http://en.wikipedia.org/wiki/Phosphorus"><big><strong an="15">15</strong> <acronym style="color: rgb(0, 0, 0);">P</acronym> <em class="Long">Phosphorus</em> <i>30.973761998</i></big><small>2<br>8<br>5</small></a></td>
+<td class="Element Nonmetal Chalcogen p"><a href="http://en.wikipedia.org/wiki/Sulfur"><big><strong an="16">16</strong> <acronym style="color: rgb(0, 0, 0);">S</acronym> <em>Sulfur</em> <i>32.06</i></big><small>2<br>8<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Chlorine"><big><strong an="17">17</strong> <acronym style="color: rgb(153, 0, 0);">Cl</acronym> <em>Chlorine</em> <i>35.45</i></big><small>2<br>8<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Argon"><big><strong an="18">18</strong> <acronym style="color: rgb(153, 0, 0);">Ar</acronym> <em>Argon</em> <i>39.948</i></big><small>2<br>8<br>8</small></a></td>
+<td class="Shells"><small>K<br>L<br>M</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%204%20element">4</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Potassium"><big><strong an="19">19</strong> <acronym style="color: rgb(0, 0, 0);">K</acronym> <em class="Long">Potassium</em> <i>39.0983</i></big><small>2<br>8<br>8<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Calcium"><big><strong an="20">20</strong> <acronym style="color: rgb(0, 0, 0);">Ca</acronym> <em>Calcium</em> <i>40.078</i></big><small>2<br>8<br>8<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Scandium"><big><strong an="21">21</strong> <acronym style="color: rgb(0, 0, 0);">Sc</acronym> <em>Scandium</em> <i>44.955908</i></big><small>2<br>8<br>9<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Titanium"><big><strong an="22">22</strong> <acronym style="color: rgb(0, 0, 0);">Ti</acronym> <em>Titanium</em> <i>47.867</i></big><small>2<br>8<br>10<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Vanadium"><big><strong an="23">23</strong> <acronym style="color: rgb(0, 0, 0);">V</acronym> <em class="Long">Vanadium</em> <i>50.9415</i></big><small>2<br>8<br>11<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Chromium"><big><strong an="24">24</strong> <acronym style="color: rgb(0, 0, 0);">Cr</acronym> <em class="Long">Chromium</em> <i>51.9961</i></big><small>2<br>8<br>13<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Manganese"><big><strong an="25">25</strong> <acronym style="color: rgb(0, 0, 0);">Mn</acronym> <em class="Long">Manganese</em> <i>54.938044</i></big><small>2<br>8<br>13<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Iron"><big><strong an="26">26</strong> <acronym style="color: rgb(0, 0, 0);">Fe</acronym> <em>Iron</em> <i>55.845</i></big><small>2<br>8<br>14<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Cobalt"><big><strong an="27">27</strong> <acronym style="color: rgb(0, 0, 0);">Co</acronym> <em>Cobalt</em> <i>58.933194</i></big><small>2<br>8<br>15<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Nickel"><big><strong an="28">28</strong> <acronym style="color: rgb(0, 0, 0);">Ni</acronym> <em>Nickel</em> <i>58.6934</i></big><small>2<br>8<br>16<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Copper"><big><strong an="29">29</strong> <acronym style="color: rgb(0, 0, 0);">Cu</acronym> <em>Copper</em> <i>63.546</i></big><small>2<br>8<br>18<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Zinc"><big><strong an="30">30</strong> <acronym style="color: rgb(0, 0, 0);">Zn</acronym> <em>Zinc</em> <i>65.38</i></big><small>2<br>8<br>18<br>2</small></a></td>
+<td class="Element Poor Boron p"><a href="http://en.wikipedia.org/wiki/Gallium"><big><strong an="31">31</strong> <acronym style="color: rgb(0, 0, 0);">Ga</acronym> <em>Gallium</em> <i>69.723</i></big><small>2<br>8<br>18<br>3</small></a></td>
+<td class="Element Metalloid Carbon p"><a href="http://en.wikipedia.org/wiki/Germanium"><big><strong an="32">32</strong> <acronym style="color: rgb(0, 0, 0);">Ge</acronym> <em class="Long">Germanium</em> <i>72.63</i></big><small>2<br>8<br>18<br>4</small></a></td>
+<td class="Element Metalloid Pnictogen p"><a href="http://en.wikipedia.org/wiki/Arsenic"><big><strong an="33">33</strong> <acronym style="color: rgb(0, 0, 0);">As</acronym> <em>Arsenic</em> <i>74.921595</i></big><small>2<br>8<br>18<br>5</small></a></td>
+<td class="Element Nonmetal Chalcogen p"><a href="http://en.wikipedia.org/wiki/Selenium"><big><strong an="34">34</strong> <acronym style="color: rgb(0, 0, 0);">Se</acronym> <em>Selenium</em> <i>78.971</i></big><small>2<br>8<br>18<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Bromine"><big><strong an="35">35</strong> <acronym style="color: rgb(0, 0, 221);">Br</acronym> <em>Bromine</em> <i>79.904</i></big><small>2<br>8<br>18<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Krypton"><big><strong an="36">36</strong> <acronym style="color: rgb(153, 0, 0);">Kr</acronym> <em>Krypton</em> <i>83.798</i></big><small>2<br>8<br>18<br>8</small></a></td>
+<td class="Shells"><small>K<br>L<br>M<br>N</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%205%20element">5</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Rubidium"><big><strong an="37">37</strong> <acronym style="color: rgb(0, 0, 0);">Rb</acronym> <em>Rubidium</em> <i>85.4678</i></big><small>2<br>8<br>18<br>8<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Strontium"><big><strong an="38">38</strong> <acronym style="color: rgb(0, 0, 0);">Sr</acronym> <em>Strontium</em> <i>87.62</i></big><small>2<br>8<br>18<br>8<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Yttrium"><big><strong an="39">39</strong> <acronym style="color: rgb(0, 0, 0);">Y</acronym> <em>Yttrium</em> <i>88.90584</i></big><small>2<br>8<br>18<br>9<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Zirconium"><big><strong an="40">40</strong> <acronym style="color: rgb(0, 0, 0);">Zr</acronym> <em>Zirconium</em> <i>91.224</i></big><small>2<br>8<br>18<br>10<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Niobium"><big><strong an="41">41</strong> <acronym style="color: rgb(0, 0, 0);">Nb</acronym> <em>Niobium</em> <i>92.90637</i></big><small>2<br>8<br>18<br>12<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Molybdenum"><big><strong an="42">42</strong> <acronym style="color: rgb(0, 0, 0);">Mo</acronym> <em class="Long">Molybdenum</em> <i>95.95</i></big><small>2<br>8<br>18<br>13<br>1</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Technetium"><big><strong an="43">43</strong> <acronym style="color: rgb(0, 0, 0);">Tc</acronym> <em class="Long">Technetium</em> <i>(98)</i></big><small>2<br>8<br>18<br>13<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Ruthenium"><big><strong an="44">44</strong> <acronym style="color: rgb(0, 0, 0);">Ru</acronym> <em class="Long">Ruthenium</em> <i>101.07</i></big><small>2<br>8<br>18<br>15<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Rhodium"><big><strong an="45">45</strong> <acronym style="color: rgb(0, 0, 0);">Rh</acronym> <em>Rhodium</em> <i>102.90550</i></big><small>2<br>8<br>18<br>16<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Palladium"><big><strong an="46">46</strong> <acronym style="color: rgb(0, 0, 0);">Pd</acronym> <em>Palladium</em> <i>106.42</i></big><small>2<br>8<br>18<br>18</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Silver"><big><strong an="47">47</strong> <acronym style="color: rgb(0, 0, 0);">Ag</acronym> <em>Silver</em> <i>107.8682</i></big><small>2<br>8<br>18<br>18<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Cadmium"><big><strong an="48">48</strong> <acronym style="color: rgb(0, 0, 0);">Cd</acronym> <em>Cadmium</em> <i>112.414</i></big><small>2<br>8<br>18<br>18<br>2</small></a></td>
+<td class="Element Poor Boron p"><a href="http://en.wikipedia.org/wiki/Indium"><big><strong an="49">49</strong> <acronym style="color: rgb(0, 0, 0);">In</acronym> <em>Indium</em> <i>114.818</i></big><small>2<br>8<br>18<br>18<br>3</small></a></td>
+<td class="Element Poor Carbon p"><a href="http://en.wikipedia.org/wiki/Tin"><big><strong an="50">50</strong> <acronym style="color: rgb(0, 0, 0);">Sn</acronym> <em>Tin</em> <i>118.710</i></big><small>2<br>8<br>18<br>18<br>4</small></a></td>
+<td class="Element Metalloid Pnictogen p"><a href="http://en.wikipedia.org/wiki/Antimony"><big><strong an="51">51</strong> <acronym style="color: rgb(0, 0, 0);">Sb</acronym> <em>Antimony</em> <i>121.760</i></big><small>2<br>8<br>18<br>18<br>5</small></a></td>
+<td class="Element Metalloid Chalcogen p"><a href="http://en.wikipedia.org/wiki/Tellurium"><big><strong an="52">52</strong> <acronym style="color: rgb(0, 0, 0);">Te</acronym> <em>Tellurium</em> <i>127.60</i></big><small>2<br>8<br>18<br>18<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Iodine"><big><strong an="53">53</strong> <acronym style="color: rgb(0, 0, 0);">I</acronym> <em>Iodine</em> <i>126.90447</i></big><small>2<br>8<br>18<br>18<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Xenon"><big><strong an="54">54</strong> <acronym style="color: rgb(153, 0, 0);">Xe</acronym> <em>Xenon</em> <i>131.293</i></big><small>2<br>8<br>18<br>18<br>8</small></a></td>
+<td class="Shells"><small>K<br>L<br>M<br>N<br>O</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%206%20element">6</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Caesium"><big><strong an="55">55</strong> <acronym style="color: rgb(0, 0, 0);">Cs</acronym> <em>Caesium</em> <i>132.90545196</i></big><small>2<br>8<br>18<br>18<br>8<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Barium"><big><strong an="56">56</strong> <acronym style="color: rgb(0, 0, 0);">Ba</acronym> <em>Barium</em> <i>137.327</i></big><small>2<br>8<br>18<br>18<br>8<br>2</small></a></td>
+<td class="Lanthanoid InnerBorder BlueLeft BlueTop BlueRight">57–71</td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Hafnium"><big><strong an="72">72</strong> <acronym style="color: rgb(0, 0, 0);">Hf</acronym> <em>Hafnium</em> <i>178.49</i></big><small>2<br>8<br>18<br>32<br>10<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Tantalum"><big><strong an="73">73</strong> <acronym style="color: rgb(0, 0, 0);">Ta</acronym> <em>Tantalum</em> <i>180.94788</i></big><small>2<br>8<br>18<br>32<br>11<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Tungsten"><big><strong an="74">74</strong> <acronym style="color: rgb(0, 0, 0);">W</acronym> <em>Tungsten</em> <i>183.84</i></big><small>2<br>8<br>18<br>32<br>12<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Rhenium"><big><strong an="75">75</strong> <acronym style="color: rgb(0, 0, 0);">Re</acronym> <em>Rhenium</em> <i>186.207</i></big><small>2<br>8<br>18<br>32<br>13<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Osmium"><big><strong an="76">76</strong> <acronym style="color: rgb(0, 0, 0);">Os</acronym> <em>Osmium</em> <i>190.23</i></big><small>2<br>8<br>18<br>32<br>14<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Iridium"><big><strong an="77">77</strong> <acronym style="color: rgb(0, 0, 0);">Ir</acronym> <em>Iridium</em> <i>192.217</i></big><small>2<br>8<br>18<br>32<br>15<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Platinum"><big><strong an="78">78</strong> <acronym style="color: rgb(0, 0, 0);">Pt</acronym> <em>Platinum</em> <i>195.084</i></big><small>2<br>8<br>18<br>32<br>17<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Gold"><big><strong an="79">79</strong> <acronym style="color: rgb(0, 0, 0);">Au</acronym> <em>Gold</em> <i>196.966569</i></big><small>2<br>8<br>18<br>32<br>18<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Mercury%20(element)"><big><strong an="80">80</strong> <acronym style="color: rgb(0, 0, 221);">Hg</acronym> <em wiki="Mercury (element)">Mercury</em> <i>200.59</i></big><small>2<br>8<br>18<br>32<br>18<br>2</small></a></td>
+<td class="Element Poor Boron p"><a href="http://en.wikipedia.org/wiki/Thallium"><big><strong an="81">81</strong> <acronym style="color: rgb(0, 0, 0);">Tl</acronym> <em>Thallium</em> <i>204.38</i></big><small>2<br>8<br>18<br>32<br>18<br>3</small></a></td>
+<td class="Element Poor Carbon p"><a href="http://en.wikipedia.org/wiki/Lead"><big><strong an="82">82</strong> <acronym style="color: rgb(0, 0, 0);">Pb</acronym> <em>Lead</em> <i>207.2</i></big><small>2<br>8<br>18<br>32<br>18<br>4</small></a></td>
+<td class="Element Poor Pnictogen p"><a href="http://en.wikipedia.org/wiki/Bismuth"><big><strong an="83">83</strong> <acronym style="color: rgb(0, 0, 0);">Bi</acronym> <em>Bismuth</em> <i>208.98040</i></big><small>2<br>8<br>18<br>32<br>18<br>5</small></a></td>
+<td class="Element Metalloid Chalcogen p"><a href="http://en.wikipedia.org/wiki/Polonium"><big><strong an="84">84</strong> <acronym style="color: rgb(0, 0, 0);">Po</acronym> <em>Polonium</em> <i>(209)</i></big><small>2<br>8<br>18<br>32<br>18<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Astatine"><big><strong an="85">85</strong> <acronym style="color: rgb(0, 0, 0);">At</acronym> <em>Astatine</em> <i>(210)</i></big><small>2<br>8<br>18<br>32<br>18<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Radon"><big><strong an="86">86</strong> <acronym style="color: rgb(153, 0, 0);">Rn</acronym> <em>Radon</em> <i>(222)</i></big><small>2<br>8<br>18<br>32<br>18<br>8</small></a></td>
+<td class="Shells"><small>K<br>L<br>M<br>N<br>O<br>P</small></td>
+</tr>
+
+<tr>
+<th class="Period"><a href="http://en.wikipedia.org/wiki/Period%207%20element">7</a></th>
+<td class="Element Alkali s"><a href="http://en.wikipedia.org/wiki/Francium"><big><strong an="87">87</strong> <acronym style="color: rgb(0, 0, 0);">Fr</acronym> <em>Francium</em> <i>(223)</i></big><small>2<br>8<br>18<br>32<br>18<br>8<br>1</small></a></td>
+<td class="Element Alkaline s"><a href="http://en.wikipedia.org/wiki/Radium"><big><strong an="88">88</strong> <acronym style="color: rgb(0, 0, 0);">Ra</acronym> <em>Radium</em> <i>(226)</i></big><small>2<br>8<br>18<br>32<br>18<br>8<br>2</small></a></td>
+<td class="Actinoid InnerBorder BlueLeft BlueRight">89–103</td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Rutherfordium"><big><strong an="104">104</strong> <acronym style="color: rgb(102, 119, 102);">Rf</acronym> <em class="Long">Rutherfordium</em> <i>(267)</i></big><small>2<br>8<br>18<br>32<br>32<br>10<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Dubnium"><big><strong an="105">105</strong> <acronym style="color: rgb(102, 119, 102);">Db</acronym> <em>Dubnium</em> <i>(268)</i></big><small>2<br>8<br>18<br>32<br>32<br>11<br>2</small></a></td>
+<td class="Element Transition d" style=""><a href="http://en.wikipedia.org/wiki/Seaborgium"><big><strong an="106">106</strong> <acronym style="color: rgb(102, 119, 102);">Sg</acronym> <em class="Long">Seaborgium</em> <i>(271)</i></big><small>2<br>8<br>18<br>32<br>32<br>12<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Bohrium"><big><strong an="107">107</strong> <acronym style="color: rgb(102, 119, 102);">Bh</acronym> <em>Bohrium</em> <i>(272)</i></big><small>2<br>8<br>18<br>32<br>32<br>13<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Hassium"><big><strong an="108">108</strong> <acronym style="color: rgb(102, 119, 102);">Hs</acronym> <em>Hassium</em> <i>(270)</i></big><small>2<br>8<br>18<br>32<br>32<br>14<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Meitnerium"><big><strong an="109">109</strong> <acronym style="color: rgb(102, 119, 102);">Mt</acronym> <em class="Long">Meitnerium</em> <i>(276)</i></big><small>2<br>8<br>18<br>32<br>32<br>15<br>2</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Darmstadtium"><big><strong an="110">110</strong> <acronym style="color: rgb(102, 119, 102);">Ds</acronym> <em class="Long">Darmstadtium</em> <i>(281)</i></big><small>2<br>8<br>18<br>32<br>32<br>17<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Roentgenium"><big><strong an="111">111</strong> <acronym style="color: rgb(102, 119, 102);">Rg</acronym> <em class="Long">Roentgenium</em> <i>(280)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>1</small></a></td>
+<td class="Element Transition d"><a href="http://en.wikipedia.org/wiki/Copernicium"><big><strong an="112">112</strong> <acronym style="color: rgb(102, 119, 102);">Cn</acronym> <em class="Long">Copernicium</em> <i>(285)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>2</small></a></td>
+<td class="Element Poor Boron p"><a href="http://en.wikipedia.org/wiki/Ununtrium"><big><strong an="113">113</strong> <acronym class="Long" style="color: rgb(102, 119, 102);">Uut</acronym> <em class="Long">Ununtrium</em> <i>(284)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>3</small></a></td>
+<td class="Element Poor Carbon p"><a href="http://en.wikipedia.org/wiki/Flerovium"><big><strong an="114">114</strong> <acronym style="color: rgb(102, 119, 102);">Fl</acronym> <em>Flerovium</em> <i>(289)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>4</small></a></td>
+<td class="Element Poor Pnictogen p"><a href="http://en.wikipedia.org/wiki/Ununpentium"><big><strong an="115">115</strong> <acronym class="Long" style="color: rgb(102, 119, 102);">Uup</acronym> <em class="Long">Ununpentium</em> <i>(288)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>5</small></a></td>
+<td class="Element Poor Chalcogen p"><a href="http://en.wikipedia.org/wiki/Livermorium"><big><strong an="116">116</strong> <acronym style="color: rgb(102, 119, 102);">Lv</acronym> <em class="Long">Livermorium</em> <i>(293)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>6</small></a></td>
+<td class="Element Halogen p"><a href="http://en.wikipedia.org/wiki/Ununseptium"><big><strong an="117">117</strong> <acronym class="Long" style="color: rgb(102, 119, 102);">Uus</acronym> <em class="Long">Ununseptium</em> <i>(294)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>7</small></a></td>
+<td class="Element Noble p"><a href="http://en.wikipedia.org/wiki/Ununoctium"><big><strong an="118">118</strong> <acronym class="Long" style="color: rgb(102, 119, 102);">Uuo</acronym> <em class="Long">Ununoctium</em> <i>(294)</i></big><small>2<br>8<br>18<br>32<br>32<br>18<br>8</small></a></td>
+<td class="Shells"><small>K<br>L<br>M<br>N<br>O<br>P<br>Q</small></td>
+</tr>
+
+<tr>
+<td colspan="3" rowspan="4"></td>
+<td class="InnerBorder BlueLeft BlueRight"></td>
+<td class="Paren" id="Paren" colspan="16">For elements with no stable isotopes, the mass number of the isotope with the longest half-life is in parentheses.</td>
+</tr>
+
+<tr>
+<td class="InnerBorder BlueLeft"></td>
+<td class="InnerBorder BlueTop BlueBottom Copyright" colspan="15"><span>Periodic Table Design &amp; Interface Copyright © 1997 <a href="http://www.dayah.com/">Michael Dayah</a>. Ptable.com Last updated May 22, 2015</span>&nbsp;</td>
+<td class="InnerBorder BlueTop BlueRight"></td>
+</tr>
+
+<tr>
+<td class="InnerBorder BlueLeft BlueRight BlueBottom" rowspan="2"></td>
+<td class="Element Lanthanoid f" style=""><a href="http://en.wikipedia.org/wiki/Lanthanum"><big><strong an="57">57</strong> <acronym style="color: rgb(0, 0, 0);">La</acronym> <em class="Long">Lanthanum</em> <i>138.90547</i></big><small>2<br>8<br>18<br>18<br>9<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Cerium"><big><strong an="58">58</strong> <acronym style="color: rgb(0, 0, 0);">Ce</acronym> <em>Cerium</em> <i>140.116</i></big><small>2<br>8<br>18<br>19<br>9<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Praseodymium"><big><strong an="59">59</strong> <acronym style="color: rgb(0, 0, 0);">Pr</acronym> <em class="Long">Praseodymium</em> <i>140.90766</i></big><small>2<br>8<br>18<br>21<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Neodymium"><big><strong an="60">60</strong> <acronym style="color: rgb(0, 0, 0);">Nd</acronym> <em class="Long">Neodymium</em> <i>144.242</i></big><small>2<br>8<br>18<br>22<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Promethium"><big><strong an="61">61</strong> <acronym style="color: rgb(0, 0, 0);">Pm</acronym> <em class="Long">Promethium</em> <i>(145)</i></big><small>2<br>8<br>18<br>23<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Samarium"><big><strong an="62">62</strong> <acronym style="color: rgb(0, 0, 0);">Sm</acronym> <em class="Long">Samarium</em> <i>150.36</i></big><small>2<br>8<br>18<br>24<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Europium"><big><strong an="63">63</strong> <acronym style="color: rgb(0, 0, 0);">Eu</acronym> <em>Europium</em> <i>151.964</i></big><small>2<br>8<br>18<br>25<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Gadolinium"><big><strong an="64">64</strong> <acronym style="color: rgb(0, 0, 0);">Gd</acronym> <em class="Long">Gadolinium</em> <i>157.25</i></big><small>2<br>8<br>18<br>25<br>9<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Terbium"><big><strong an="65">65</strong> <acronym style="color: rgb(0, 0, 0);">Tb</acronym> <em>Terbium</em> <i>158.92535</i></big><small>2<br>8<br>18<br>27<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Dysprosium"><big><strong an="66">66</strong> <acronym style="color: rgb(0, 0, 0);">Dy</acronym> <em class="Long">Dysprosium</em> <i>162.500</i></big><small>2<br>8<br>18<br>28<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Holmium"><big><strong an="67">67</strong> <acronym style="color: rgb(0, 0, 0);">Ho</acronym> <em>Holmium</em> <i>164.93033</i></big><small>2<br>8<br>18<br>29<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Erbium"><big><strong an="68">68</strong> <acronym style="color: rgb(0, 0, 0);">Er</acronym> <em>Erbium</em> <i>167.259</i></big><small>2<br>8<br>18<br>30<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Thulium"><big><strong an="69">69</strong> <acronym style="color: rgb(0, 0, 0);">Tm</acronym> <em>Thulium</em> <i>168.93422</i></big><small>2<br>8<br>18<br>31<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid f"><a href="http://en.wikipedia.org/wiki/Ytterbium"><big><strong an="70">70</strong> <acronym style="color: rgb(0, 0, 0);">Yb</acronym> <em>Ytterbium</em> <i>173.054</i></big><small>2<br>8<br>18<br>32<br>8<br>2</small></a></td>
+<td class="Element Lanthanoid d"><a href="http://en.wikipedia.org/wiki/Lutetium"><big><strong an="71">71</strong> <acronym style="color: rgb(0, 0, 0);">Lu</acronym> <em>Lutetium</em> <i>174.9668</i></big><small>2<br>8<br>18<br>32<br>9<br>2</small></a></td>
+<td rowspan="2" class="InnerBorder BlueRight BlueBottom BlueLeft"></td>
+</tr>
+
+<tr>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Actinium"><big><strong an="89">89</strong> <acronym style="color: rgb(0, 0, 0);">Ac</acronym> <em>Actinium</em> <i>(227)</i></big><small>2<br>8<br>18<br>32<br>18<br>9<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Thorium"><big><strong an="90">90</strong> <acronym style="color: rgb(0, 0, 0);">Th</acronym> <em>Thorium</em> <i>232.0377</i></big><small>2<br>8<br>18<br>32<br>18<br>10<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Protactinium"><big><strong an="91">91</strong> <acronym style="color: rgb(0, 0, 0);">Pa</acronym> <em class="Long">Protactinium</em> <i>231.03588</i></big><small>2<br>8<br>18<br>32<br>20<br>9<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Uranium"><big><strong an="92">92</strong> <acronym style="color: rgb(0, 0, 0);">U</acronym> <em>Uranium</em> <i>238.02891</i></big><small>2<br>8<br>18<br>32<br>21<br>9<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Neptunium"><big><strong an="93">93</strong> <acronym style="color: rgb(0, 0, 0);">Np</acronym> <em class="Long">Neptunium</em> <i>(237)</i></big><small>2<br>8<br>18<br>32<br>22<br>9<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Plutonium"><big><strong an="94">94</strong> <acronym style="color: rgb(0, 0, 0);">Pu</acronym> <em>Plutonium</em> <i>(244)</i></big><small>2<br>8<br>18<br>32<br>24<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Americium"><big><strong an="95">95</strong> <acronym style="color: rgb(0, 0, 0);">Am</acronym> <em class="Long">Americium</em> <i>(243)</i></big><small>2<br>8<br>18<br>32<br>25<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Curium"><big><strong an="96">96</strong> <acronym style="color: rgb(0, 0, 0);">Cm</acronym> <em>Curium</em> <i>(247)</i></big><small>2<br>8<br>18<br>32<br>25<br>9<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Berkelium"><big><strong an="97">97</strong> <acronym style="color: rgb(0, 0, 0);">Bk</acronym> <em>Berkelium</em> <i>(247)</i></big><small>2<br>8<br>18<br>32<br>27<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Californium"><big><strong an="98">98</strong> <acronym style="color: rgb(0, 0, 0);">Cf</acronym> <em class="Long">Californium</em> <i>(251)</i></big><small>2<br>8<br>18<br>32<br>28<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Einsteinium"><big><strong an="99">99</strong> <acronym style="color: rgb(0, 0, 0);">Es</acronym> <em class="Long">Einsteinium</em> <i>(252)</i></big><small>2<br>8<br>18<br>32<br>29<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Fermium"><big><strong an="100">100</strong> <acronym style="color: rgb(0, 0, 0);">Fm</acronym> <em>Fermium</em> <i>(257)</i></big><small>2<br>8<br>18<br>32<br>30<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Mendelevium"><big><strong an="101">101</strong> <acronym style="color: rgb(0, 0, 0);">Md</acronym> <em class="Long">Mendelevium</em> <i>(258)</i></big><small>2<br>8<br>18<br>32<br>31<br>8<br>2</small></a></td>
+<td class="Element Actinoid f"><a href="http://en.wikipedia.org/wiki/Nobelium"><big><strong an="102">102</strong> <acronym style="color: rgb(0, 0, 0);">No</acronym> <em>Nobelium</em> <i>(259)</i></big><small>2<br>8<br>18<br>32<br>32<br>8<br>2</small></a></td>
+<td class="Element Actinoid d"><a href="http://en.wikipedia.org/wiki/Lawrencium"><big><strong an="103">103</strong> <acronym style="color: rgb(0, 0, 0);">Lr</acronym> <em class="Long">Lawrencium</em> <i>(262)</i></big><small>2<br>8<br>18<br>32<br>32<br>8<br>3</small></a></td>
+</tr>
+</table>
+
+<table id="enegativity">
+<tr>
+<td></td><td colspan="18" align="center">Group
+</td></tr><tr>
+<td>Period
+</td><td>1
+</td><td>2
+</td><td>3
+</td><td>4
+</td><td>5
+</td><td>6
+</td><td>7
+</td><td>8
+</td><td>9
+</td><td>10
+</td><td>11
+</td><td>12
+</td><td>13
+</td><td>14
+</td><td>15
+</td><td>16
+</td><td>17
+</td><td>18
+</td></tr><tr>
+<td>1
+</td><td bgcolor="#ffbf33">H<br>2.1
+</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td bgcolor="#80bfff">He<br>0
+
+</td></tr><tr>
+<td>2
+</td><td bgcolor="#00ffff">Li<br>0.98
+</td><td bgcolor="#bfffbf">Be<br>1.57
+</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td bgcolor="#ffbf33">B<br>2.04
+</td><td bgcolor="#ff00ff">C<br>2.55
+</td><td bgcolor="#ff0000">N<br>3.04
+</td><td bgcolor="#ff0000">O<br>3.44
+</td><td bgcolor="#ff0000">F<br>3.98
+</td><td bgcolor="#80bfff">Ne<br>0
+
+</td></tr><tr>
+<td>3
+</td><td bgcolor="#00ffff">Na<br>0.93
+</td><td bgcolor="#00ff00">Mg<br>1.31
+</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td bgcolor="#bfffbf">Al<br>1.61
+</td><td bgcolor="#ffff00">Si<br>1.9
+</td><td bgcolor="#ffbf33">P<br>2.19
+</td><td bgcolor="#ff00ff">S<br>2.58
+</td><td bgcolor="#ff0000">Cl<br>3.16
+</td><td bgcolor="#80bfff">Ar<br>0
+
+</td></tr><tr>
+<td>4
+</td><td bgcolor="#00ffff">K<br>0.82
+</td><td bgcolor="#00ff00">Ca<br>1
+</td><td bgcolor="#bfffbf">Sc<br>1.36
+</td><td bgcolor="#bfffbf">Ti<br>1.54
+</td><td bgcolor="#bfffbf">V<br>1.63
+</td><td bgcolor="#ffff00">Cr<br>1.66
+</td><td bgcolor="#bfffbf">Mn<br>1.55
+</td><td bgcolor="#ffff00">Fe<br>1.83
+</td><td bgcolor="#ffff00">Co<br>1.88 
+</td><td bgcolor="#ffff00">Ni<br>1.91
+</td><td bgcolor="#ffff00">Cu<br>1.9
+</td><td bgcolor="#bfffbf">Zn<br>1.65
+</td><td bgcolor="#ffff00">Ga<br>1.81
+</td><td bgcolor="#ffbf33">Ge<br>2.01
+</td><td bgcolor="#ffbf33">As<br>2.18
+</td><td bgcolor="#ff00ff">Se<br>2.55
+</td><td bgcolor="#ff0000">Br<br>2.96
+</td><td bgcolor="#80bfff">Kr<br>0
+
+</td></tr><tr>
+<td>5
+</td><td bgcolor="#00ffff">Rb<br>0.82
+</td><td bgcolor="#00ffff">Sr<br>0.95
+</td><td bgcolor="#00ff00">Y<br>1.22
+</td><td bgcolor="#bfffbf">Zr<br>1.33
+</td><td bgcolor="#bfffbf">Nb<br>1.6
+</td><td bgcolor="#ffbf33">Mo<br>2.16
+</td><td bgcolor="#ffff00">Tc<br>1.9
+</td><td bgcolor="#ffbf33">Ru<br>2.2
+</td><td bgcolor="#ffbf33">Rh<br>2.28
+</td><td bgcolor="#ffbf33">Pd<br>2.2
+</td><td bgcolor="#ffff00">Ag<br>1.93
+</td><td bgcolor="#ffff00">Cd<br>1.69
+</td><td bgcolor="#ffff00">In<br>1.78
+</td><td bgcolor="#ffff00">Sn<br>1.96
+</td><td bgcolor="#ffbf33">Sb<br>2.05
+</td><td bgcolor="#ffbf33">Te<br>2.1
+</td><td bgcolor="#ff0000">I<br>2.66
+</td><td bgcolor="#ff00ff">Xe<br>2.6
+
+</td></tr><tr>
+<td>6
+</td><td bgcolor="#00ffff">Cs<br>0.79
+</td><td bgcolor="#00ffff">Ba<br>0.89
+</td><td bgcolor="#00ff00">La<br>1.1
+</td><td bgcolor="#00ff00">Hf<br>1.3
+</td><td bgcolor="#bfffbf">Ta<br>1.5
+</td><td bgcolor="#ff00ff">W<br>2.36
+</td><td bgcolor="#ffff00">Re<br>1.9
+</td><td bgcolor="#ffbf33">Os<br>2.2
+</td><td bgcolor="#ffbf33">Ir<br>2.2
+</td><td bgcolor="#ffbf33">Pt<br>2.28
+</td><td bgcolor="#ff00ff">Au<br>2.54
+</td><td bgcolor="#ffbf33">Hg<br>2
+</td><td bgcolor="#ffbf33">Tl<br>2.04
+</td><td bgcolor="#ff00ff">Pb<br>2.33
+</td><td bgcolor="#ffbf33">Bi<br>2.02
+</td><td bgcolor="#ffbf33">Po<br>2
+</td><td bgcolor="#ffbf33">At<br>2.2
+</td><td bgcolor="#80bfff">Rn<br>0
+
+</td></tr><tr>
+<td>7
+</td><td bgcolor="#00ffff">Fr<br>0.7
+</td><td bgcolor="#00ffff">Ra<br>0.89
+</td><td bgcolor="#00ff00">Ac<br>1.1
+</td><td bgcolor="#ffffff">Rf<br>
+</td><td bgcolor="#ffffff">Db<br>
+</td><td bgcolor="#ffffff">Sg<br>
+</td><td bgcolor="#ffffff">Bh<br>
+</td><td bgcolor="#ffffff">Hs<br>
+</td><td bgcolor="#ffffff">Mt<br>
+</td><td bgcolor="#ffffff">Uun<br>
+</td><td bgcolor="#ffffff">Uuu<br>
+</td><td bgcolor="#ffffff">Uub<br>
+</td><td></td><td></td><td></td><td></td><td></td><td>
+</td></tr><tr><td></td></tr><tr><td>
+</td></tr><tr>
+<td></td><td colspan="4" align="center">Lanthanides
+</td><td bgcolor="#00ff00">Ce<br>1.12
+</td><td bgcolor="#00ff00">Pr<br>1.13
+</td><td bgcolor="#00ff00">Nd<br>1.14
+</td><td bgcolor="#00ff00">Pm<br>1.13
+</td><td bgcolor="#00ff00">Sm<br>1.17
+</td><td bgcolor="#00ff00">Eu<br>1.2
+</td><td bgcolor="#00ff00">Gd<br>1.2
+</td><td bgcolor="#00ff00">Tb<br>1.1
+</td><td bgcolor="#00ff00">Dy<br>1.22
+</td><td bgcolor="#00ff00">Ho<br>1.23
+</td><td bgcolor="#00ff00">Er<br>1.24
+</td><td bgcolor="#00ff00">Tm<br>1.25
+</td><td bgcolor="#00ff00">Yb<br>1.1
+</td><td bgcolor="#00ff00">Lu<br>1.27
+
+</td></tr><tr>
+<td></td><td colspan="4" align="center">Actinides
+</td><td bgcolor="#00ff00">Th<br>1.3
+</td><td bgcolor="#bfffbf">Pa<br>1.5
+</td><td bgcolor="#bfffbf">U<br>1.38
+</td><td bgcolor="#bfffbf">Np<br>1.36
+</td><td bgcolor="#00ff00">Pu<br>1.28
+</td><td bgcolor="#00ff00">Am<br>1.3
+</td><td bgcolor="#00ff00">Cm<br>1.3
+</td><td bgcolor="#00ff00">Bk<br>1.3
+</td><td bgcolor="#00ff00">Cf<br>1.3
+</td><td bgcolor="#00ff00">Es<br>1.3
+</td><td bgcolor="#00ff00">Fm<br>1.3
+</td><td bgcolor="#00ff00">Md<br>1.3
+</td><td bgcolor="#00ff00">No<br>1.3
+</td><td bgcolor="#ffffff">Lr<br>
+
+</td></tr></table>
+
+<div>
+</body>
+</html>
