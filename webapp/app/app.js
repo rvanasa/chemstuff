@@ -5,8 +5,10 @@ angular.module('chemthings', ['ngSanitize'])
 	templateUrl: 'component/app.html',
 	controller($interval, Input, Output, Settings, EvalService)
 	{
-		EvalService.addImport('lib/util/array-extensions');
-		EvalService.addImport('lib/util/chem-util');
+		EvalService.addImport('lib/array-extensions');
+		EvalService.addImport('lib/chem');
+		EvalService.addImport('lib/chem-util');
+		EvalService.addImport('lib/chem-eq');
 			
 		this.script = window.localStorage.getItem('lastScript') || '';
 		
@@ -142,22 +144,25 @@ angular.module('chemthings', ['ngSanitize'])
 			}
 		}
 		
-		wait()
+		hold()
 		{
 			this.waiting++;
 		}
 		
 		resume()
 		{
-			this.waiting--;
-			if(!this.waiting)
+			if(this.waiting > 0)
 			{
-				for(var i = 0; i < this.callbacks.length; i++)
+				this.waiting--;
+				if(!this.waiting)
 				{
-					this.callbacks[i]();
+					for(var i = 0; i < this.callbacks.length && !this.waiting; i++)
+					{
+						this.callbacks.shift()();
+					}
 				}
-				this.callbacks.length = 0;
 			}
+			else throw 'Buffer unlocked extraneously';
 		}
 	}
 })
@@ -178,8 +183,7 @@ angular.module('chemthings', ['ngSanitize'])
 {
 	var scriptBuffer = new Buffer();
 	
-	/* global E */
-	Sandbox.window.E = E;
+	Sandbox.window.E = window.E;
 	
 	var imports = [];
 	this.addImport = (path) =>
@@ -187,19 +191,24 @@ angular.module('chemthings', ['ngSanitize'])
 		if(~imports.indexOf(path)) return;
 		imports.push(path);
 		
-		scriptBuffer.wait();
+		scriptBuffer.run(() =>
+		{
+			scriptBuffer.hold();
 		
-		$http.get(path + '.js').then(
-			(response) =>
-			{
-				try {Sandbox.window.eval(response.data)}
-				finally {scriptBuffer.resume()}
-			},
-			() =>
-			{
-				Output.status = `Failed to load script from '${path}'`;
-				scriptBuffer.resume();
-			});
+			$http.get(path + '.js').then(
+				(response) =>
+				{
+					console.log('[import] ' + path);
+					
+					try {Sandbox.window.eval(response.data)}
+					catch(e) {console.error(e.stack)}
+					finally {scriptBuffer.resume()}
+				}, () =>
+				{
+					Output.status = 'Failed to load script from ' + path;
+					scriptBuffer.unlock();
+				});
+		});
 	}
 	
 	this.evaluate = (script) =>
@@ -219,7 +228,7 @@ angular.module('chemthings', ['ngSanitize'])
 					var splitIndex = script.lastIndexOf('\n') + 1;
 					var endLine = script.substring(splitIndex).trim();
 					
-					if(!/^((return|for|if|while)[\(\s]|var|let|const|\})/.test(endLine))
+					if(!/^((return|for|if|while)[\(\s]|var|let|const|\}|\)|\.)/.test(endLine))
 					{
 						script = script.substring(0, splitIndex) + 'return ' + endLine;
 					}
@@ -235,7 +244,7 @@ angular.module('chemthings', ['ngSanitize'])
 				
 				Output.current = true;
 				Output.status = null;
-				Output.result = SerializerService.deserialize(evalResult);
+				Output.result = SerializerService.serialize(evalResult);
 			}
 			catch(e)
 			{
@@ -247,21 +256,26 @@ angular.module('chemthings', ['ngSanitize'])
 
 .service('SerializerService', function()
 {
-	this.serialize = (string, type) =>
+	this.serialize = (value) =>
 	{
-		if(type == 'string') return string;
-		if(type == 'element') return E(string);
-		return string;
-	}
-	
-	this.deserialize = (value) =>
-	{
+		if(typeof value == 'string') return value;
+		if(typeof value == 'number' || typeof value == 'boolean') return value.toString();
 		if(value === undefined) return;
 		if(value === null) return 'null';
-		if(typeof value == 'string' || typeof value == 'number' || typeof value == 'boolean') return value;
 		if(typeof value == 'function') return value.toString();
 		if(Array.isArray(value)) return value.join('\n');
 		
-		return Object.keys(value).map(k => '<b>' + k + '</b>: ' + value[k]).join('\n');
+		return Object.keys(value).map(k => '<b>' + k + '</b>: ' + this.serializeProperty(value[k])).join('\n');
+	}
+	
+	this.serializeProperty = (value) =>
+	{
+		if(typeof value == 'string') return '\'' + value + '\'';
+		if(typeof value == 'number' || typeof value == 'boolean') return value.toString();
+		if(!value || typeof value == 'function') return String(value);
+		if(Array.isArray(value)) return '<b>[</b>' + value.join(' ') + '<b>]</b>';
+		if(Object.getPrototypeOf(Object.getPrototypeOf(value)) != null) return value.toString();
+		
+		return '<b>{</b>' + Object.keys(value).map(k => '\'' + k + '\': ' + value[k]).join(', ') + '<b>}</b>';
 	}
 })
