@@ -7,8 +7,8 @@ angular.module('chemthings', ['ngSanitize'])
 	{
 		EvalService.addImport('lib/array-extensions');
 		EvalService.addImport('lib/chem');
-		EvalService.addImport('lib/chem-util');
 		EvalService.addImport('lib/chem-eq');
+		EvalService.addImport('lib/chem-util');
 			
 		this.script = window.localStorage.getItem('lastScript') || '';
 		
